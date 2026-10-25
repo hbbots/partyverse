@@ -1,0 +1,1098 @@
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PartyVerse • Premium Offline Flutter Arcade Suite (12 Games)</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="icon" href="logo.jpg" type="image/x-icon">
+
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#050711',
+            brandDarker: '#020409',
+            brandCard: 'rgba(13, 20, 38, 0.72)',
+            cyanNeon: '#00F0FF',
+            magentaNeon: '#FF007F',
+            goldNeon: '#FFB800',
+            limeNeon: '#00FF66',
+            violetNeon: '#8B5CF6',
+            orangeNeon: '#FF6D00'
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Cyberpunk & Glassmorphism Styles */
+    body {
+      background-color: #050711;
+      color: #F8FAFC;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Canvas Background */
+    #ambientCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.75;
+    }
+
+    /* Glassmorphic Cards */
+    .glass-card {
+      background: rgba(13, 20, 38, 0.68);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(255, 255, 255, 0.24);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.75);
+    }
+
+    /* Neon Gradients */
+    .text-gradient-cyan-magenta {
+      background: linear-gradient(135deg, #00F0FF 0%, #FF007F 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn-neon-cyan {
+      box-shadow: 0 0 25px -4px rgba(0, 240, 255, 0.45);
+      transition: all 0.25s ease;
+    }
+    .btn-neon-cyan:hover {
+      box-shadow: 0 0 40px 0px rgba(0, 240, 255, 0.75);
+      transform: translateY(-2px);
+    }
+
+    /* Matrix Subtle Background Grid */
+    .grid-matrix {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #050711;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00F0FF;
+    }
+  </style>
+</head>
+<body class="grid-matrix relative min-h-screen">
+
+  <!-- Interactive 60fps Particle Canvas -->
+  <canvas id="ambientCanvas"></canvas>
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#050711]/85 border-b border-white/10 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-3.5 group">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-magentaNeon to-cyanNeon flex items-center justify-center text-black font-black text-xl shadow-[0_0_20px_rgba(0,240,255,0.45)] group-hover:scale-105 transition-transform">
+          <i class="fa-solid fa-gamepad text-black"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-xl tracking-wider text-white">PARTY<span class="text-cyanNeon">VERSE</span></span>
+          <span class="hidden sm:inline-block ml-2 px-2.5 py-0.5 text-[10px] font-mono font-bold tracking-widest uppercase rounded bg-white/5 border border-white/10 text-slate-400">12-IN-1 FLUTTER ARTIFACT</span>
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <nav class="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-300">
+        <a href="#games" class="hover:text-cyanNeon transition-colors flex items-center gap-2">
+          <span>All Games</span>
+          <span class="px-2 py-0.5 text-[10px] font-mono rounded-full bg-cyanNeon/10 text-cyanNeon font-bold">12</span>
+        </a>
+        <a href="#architecture" class="hover:text-cyanNeon transition-colors">Canvas Engine</a>
+        <a href="#developer" class="hover:text-cyanNeon transition-colors">Solo Dev Philosophy</a>
+      </nav>
+
+      <!-- Nav CTA -->
+      <div class="flex items-center gap-4">
+        <a href="#download" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyanNeon to-blue-600 text-black font-black text-xs tracking-wider uppercase btn-neon-cyan flex items-center gap-2">
+          <i class="fa-solid fa-download"></i>
+          <span>GET APK</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="relative z-10 pt-16 pb-20 px-6 max-w-7xl mx-auto text-center flex flex-col items-center">
+    
+    <!-- Hero Status Pill -->
+    <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-cyanNeon/10 border border-cyanNeon/30 text-cyanNeon text-xs font-mono font-bold uppercase tracking-widest mb-8">
+      <span class="w-2 h-2 rounded-full bg-cyanNeon animate-ping"></span>
+      <span>12 Pure Games • 100% Offline • Zero Unity/3D Bloat</span>
+    </div>
+
+    <!-- Main Title -->
+    <h1 class="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight max-w-5xl leading-[1.08] mb-6">
+      The Ultimate Split-Screen <br class="hidden sm:inline">
+      <span class="text-gradient-cyan-magenta">Offline Party Arcade.</span>
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="text-slate-400 text-base sm:text-lg max-w-2xl font-normal leading-relaxed mb-10">
+      Hand-crafted by a solo Flutter developer. 12 responsive, high-framerate arcade games engineered with mathematical vector physics, pseudo-3D projections, and zero external game engine dependencies.
+    </p>
+
+    <!-- Main Hero CTA Group -->
+    <div class="flex flex-wrap items-center justify-center gap-4 mb-16">
+      <a href="app-release.apk" download class="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyanNeon via-cyan-400 to-blue-500 text-black font-black text-sm tracking-widest uppercase btn-neon-cyan flex items-center gap-3">
+        <i class="fa-brands fa-android text-lg"></i>
+        <span>DOWNLOAD APP-RELEASE.APK (48.4 MB)</span>
+      </a>
+      <a href="#games" class="px-7 py-4 rounded-2xl bg-white/5 border border-white/10 hover:border-white/30 text-white font-bold text-sm tracking-wider flex items-center gap-2 transition-all">
+        <i class="fa-solid fa-layer-group text-slate-400"></i>
+        <span>Explore All 12 Games</span>
+      </a>
+    </div>
+
+    <!-- Quick Telemetry Specs Bar -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl">
+      <div class="glass-card p-5 rounded-2xl text-left border-white/5">
+        <div class="text-cyanNeon text-2xl font-black mb-1">60/120 FPS</div>
+        <div class="text-xs uppercase font-bold tracking-wider text-slate-400 font-mono">CustomPainter Loops</div>
+      </div>
+      <div class="glass-card p-5 rounded-2xl text-left border-white/5">
+        <div class="text-magentaNeon text-2xl font-black mb-1">12 Games</div>
+        <div class="text-xs uppercase font-bold tracking-wider text-slate-400 font-mono">2P, 4P &amp; Social Roster</div>
+      </div>
+      <div class="glass-card p-5 rounded-2xl text-left border-white/5">
+        <div class="text-limeNeon text-2xl font-black mb-1">100% Offline</div>
+        <div class="text-xs uppercase font-bold tracking-wider text-slate-400 font-mono">Zero Telemetry &amp; Ads</div>
+      </div>
+      <div class="glass-card p-5 rounded-2xl text-left border-white/5">
+        <div class="text-goldNeon text-2xl font-black mb-1">48.4 MB</div>
+        <div class="text-xs uppercase font-bold tracking-wider text-slate-400 font-mono">Ultra-Slim Artifact</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALL 12 GAMES SHOWCASE SECTION -->
+  <section id="games" class="relative z-10 py-20 px-6 max-w-7xl mx-auto">
+    
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <div>
+        <div class="text-cyanNeon text-xs font-mono font-black tracking-widest uppercase mb-2">COMPLETE ROSTER • 12 TITLES</div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">PartyVerse Arcade Suite</h2>
+      </div>
+
+      <!-- Live Search Filter Input -->
+      <div class="relative w-full md:w-80">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+        <input 
+          type="text" 
+          id="gameSearch" 
+          placeholder="Search games, mechanics, physics..." 
+          class="w-full pl-11 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 focus:border-cyanNeon focus:outline-none text-sm text-white placeholder-slate-500 transition-all font-sans"
+        />
+      </div>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="flex flex-wrap gap-2.5 mb-10" id="filterTabs">
+      <button data-filter="all" class="filter-btn px-4 py-2 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-cyanNeon text-black transition-all">All Games (12)</button>
+      <button data-filter="split" class="filter-btn px-4 py-2 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-white/5 border border-white/10 text-slate-300 hover:text-white transition-all">2-Player Split Screen</button>
+      <button data-filter="party" class="filter-btn px-4 py-2 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-white/5 border border-white/10 text-slate-300 hover:text-white transition-all">Party &amp; Social</button>
+      <button data-filter="arena" class="filter-btn px-4 py-2 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-white/5 border border-white/10 text-slate-300 hover:text-white transition-all">4-Player Arena &amp; Board</button>
+      <button data-filter="sports3d" class="filter-btn px-4 py-2 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-white/5 border border-white/10 text-slate-300 hover:text-white transition-all">3D Sports Engine</button>
+    </div>
+
+    <!-- Games Grid (All 12 Games) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gamesContainer">
+
+      <!-- 1. Ludo Clash -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between game-item group" data-category="arena" data-tags="ludo clash dice rolling board game 4 player home runway token capture elimination strategy turn">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-goldNeon/10 border border-goldNeon/30 text-goldNeon flex items-center justify-center text-xl shadow-[0_0_15px_rgba(255,184,0,0.25)]">
+              <i class="fa-solid fa-dice"></i>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider bg-white/5 border border-white/10 text-goldNeon uppercase">2-4 PLAYERS</span>
+          </div>
+          <h3 class="text-xl font-extrabold text-white mb-2 group-hover:text-goldNeon transition-colors">1. Ludo Clash</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            Classic 4-player board game re-engineered with clean cyber-neon paths, 3D animated dice rolling physics, token home-runways, and knock-out capture rules.
+          </p>
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Board Graph Matrix</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Rolling 3D Dice</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Token Capture</span>
+          </div>
+          <button onclick="openModal('ludo')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-goldNeon hover:text-black border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-200 transition-all flex items-center justify-center gap-2">
+            <span>Inspect Architecture</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Tic Tac Toe (Grid Battle) -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between game-item group" data-category="split" data-tags="tic tac toe grid battle neon glow disk persistence reflex split">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-magentaNeon/10 border border-magentaNeon/30 text-magentaNeon flex items-center justify-center text-xl shadow-[0_0_15px_rgba(255,0,127,0.25)]">
+              <i class="fa-solid fa-hashtag"></i>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider bg-white/5 border border-white/10 text-magentaNeon uppercase">2-PLAYER SPLIT</span>
+          </div>
+          <h3 class="text-xl font-extrabold text-white mb-2 group-hover:text-magentaNeon transition-colors">2. Tic Tac Toe (Grid Battle)</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            Cyberpunk grid warfare featuring neon glyph strikes, instant matrix win-streak detection, tactile haptic pulses, and non-blocking background disk persistence to prevent mobile UI thread stutter.
+          </p>
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Asynchronous I/O</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Streak Modals</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Matrix Scan</span>
+          </div>
+          <button onclick="openModal('tictactoe')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-magentaNeon hover:text-white border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-200 transition-all flex items-center justify-center gap-2">
+            <span>Inspect Architecture</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. Rock Paper Scissors (Cyber Clash) -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between game-item group" data-category="split" data-tags="rock paper scissors cyber clash reflex speed duel tap split">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-cyanNeon/10 border border-cyanNeon/30 text-cyanNeon flex items-center justify-center text-xl shadow-[0_0_15px_rgba(0,240,255,0.25)]">
+              <i class="fa-solid fa-hand-back-fist"></i>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider bg-white/5 border border-white/10 text-cyanNeon uppercase">2-PLAYER SPLIT</span>
+          </div>
+          <h3 class="text-xl font-extrabold text-white mb-2 group-hover:text-cyanNeon transition-colors">3. Rock Paper Scissors (Cyber Clash)</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            Ultra-fast simultaneous gesture confrontation. High-tension countdown timer, rapid dual tap feedback, streak multipliers, and instant victor evaluation across neon arena partitions.
+          </p>
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Simultaneous Pan</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Streak Score HUD</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Impulse Shakes</span>
+          </div>
+          <button onclick="openModal('rps')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-cyanNeon hover:text-black border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-200 transition-all flex items-center justify-center gap-2">
+            <span>Inspect Architecture</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. Tap Battle (Fingers War) -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between game-item group" data-category="split" data-tags="tap battle fingers war cps tug of war split screen territory">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-limeNeon/10 border border-limeNeon/30 text-limeNeon flex items-center justify-center text-xl shadow-[0_0_15px_rgba(0,255,102,0.25)]">
+              <i class="fa-solid fa-hand-pointer"></i>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider bg-white/5 border border-white/10 text-limeNeon uppercase">PURE CPS DUEL</span>
+          </div>
+          <h3 class="text-xl font-extrabold text-white mb-2 group-hover:text-limeNeon transition-colors">4. Tap Battle (Fingers War)</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            Split-screen territorial tug-of-war. Measures raw clicks-per-second (CPS) to physically push the midline neon energy border into the rival's half with dynamic screen trauma shakes.
+          </p>
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Dynamic Territory Bias</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Rapid Touch Queuing</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">60 FPS Tug Decay</span>
+          </div>
+          <button onclick="openModal('tapbattle')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-limeNeon hover:text-black border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-200 transition-all flex items-center justify-center gap-2">
+            <span>Inspect Architecture</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. Fruit Duel -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between game-item group" data-category="split" data-tags="fruit duel slicing ninja blade bombs reflex split">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-orangeNeon/10 border border-orangeNeon/30 text-orangeNeon flex items-center justify-center text-xl shadow-[0_0_15px_rgba(255,109,0,0.25)]">
+              <i class="fa-solid fa-lemon"></i>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider bg-white/5 border border-white/10 text-orangeNeon uppercase">FAST SLICING</span>
+          </div>
+          <h3 class="text-xl font-extrabold text-white mb-2 group-hover:text-orangeNeon transition-colors">5. Fruit Duel (Blade Clash)</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            Dual-player reflex blade test. Fruits and explosive hazard bombs launch across both halves. Players trace swipe cutting lines to bisect targets while avoiding penalty triggers.
+          </p>
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Blade Ray Intersection</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Juice Particles</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Bomb Penalties</span>
+          </div>
+          <button onclick="openModal('fruitduel')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-orangeNeon hover:text-black border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-200 transition-all flex items-center justify-center gap-2">
+            <span>Inspect Architecture</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 6. Carrom Clash -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between game-item group" data-category="split" data-tags="carrom clash wooden board disc baseline striker physics impulse">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-goldNeon/10 border border-goldNeon/30 text-goldNeon flex items-center justify-center text-xl shadow-[0_0_15px_rgba(255,184,0,0.25)]">
+              <i class="fa-solid fa-bullseye"></i>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider bg-white/5 border border-white/10 text-goldNeon uppercase">WOODEN PHYSICS</span>
+          </div>
+          <h3 class="text-xl font-extrabold text-white mb-2 group-hover:text-goldNeon transition-colors">6. Carrom Clash</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            Authentic wooden board simulation. Features elastic 2D disc-to-disc impulse collisions, corner pocket dampening traps, baseline striker placement sliders, and drag-and-release cue line aiming.
+          </p>
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Elastic 2D Collisions</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Pocket Traps</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Baseline Sliders</span>
+          </div>
+          <button onclick="openModal('carrom')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-goldNeon hover:text-black border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-200 transition-all flex items-center justify-center gap-2">
+            <span>Inspect Architecture</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. Pong Battle -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between game-item group" data-category="split" data-tags="pong battle table tennis retro speed wedge cartoon paddles drop shadow">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-cyanNeon/10 border border-cyanNeon/30 text-cyanNeon flex items-center justify-center text-xl shadow-[0_0_15px_rgba(0,240,255,0.25)]">
+              <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider bg-white/5 border border-white/10 text-cyanNeon uppercase">RETRO TENNIS</span>
+          </div>
+          <h3 class="text-xl font-extrabold text-white mb-2 group-hover:text-cyanNeon transition-colors">7. Pong Battle</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            Retro table tennis court on warm cream turf. High-performance circular paddle heads with rectangular protruding handles, pitch drop-shadows, fading speed-wedge motion blur trails, and edge pill scoreboard tabs.
+          </p>
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Speed-Wedge Blur</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Shadow Occlusion</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Pill UI Tabs</span>
+          </div>
+          <button onclick="openModal('pong')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-cyanNeon hover:text-black border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-200 transition-all flex items-center justify-center gap-2">
+            <span>Inspect Architecture</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 8. Basketball 30s -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between game-item group" data-category="sports3d" data-tags="basketball shootout swipe flick net swish backboard 30s turn based">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-orangeNeon/10 border border-orangeNeon/30 text-orangeNeon flex items-center justify-center text-xl shadow-[0_0_15px_rgba(255,109,0,0.25)]">
+              <i class="fa-solid fa-basketball"></i>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider bg-white/5 border border-white/10 text-orangeNeon uppercase">TURN BASED 30S</span>
+          </div>
+          <h3 class="text-xl font-extrabold text-white mb-2 group-hover:text-orangeNeon transition-colors">8. Basketball 30s</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            Streetball swipe shootout. Utilizes true 2D vector pan flick velocity (dx/dy), backboard deflection rebounds, golden rim lip bounces, and a layered net pass-through rendering that stretches and swishes dynamically.
+          </p>
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Parabolic 3D Scale</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Layered Net Pass</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">30s Shot Clock</span>
+          </div>
+          <button onclick="openModal('basketball')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-orangeNeon hover:text-black border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-200 transition-all flex items-center justify-center gap-2">
+            <span>Inspect Architecture</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 9. Word Imposter -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between game-item group" data-category="party" data-tags="word imposter spy social deduction chameleon pass play party biometric">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-magentaNeon/10 border border-magentaNeon/30 text-magentaNeon flex items-center justify-center text-xl shadow-[0_0_15px_rgba(255,0,127,0.25)]">
+              <i class="fa-solid fa-user-secret"></i>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider bg-white/5 border border-white/10 text-magentaNeon uppercase">3-8 PLAYERS</span>
+          </div>
+          <h3 class="text-xl font-extrabold text-white mb-2 group-hover:text-magentaNeon transition-colors">9. Word Imposter (Chameleon)</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            Pass-and-play social deduction game. Built with a cyberpunk biometric terminal, animated laser scanner peek terminal, 4 distinct categories (Animals, Fruits, Sports, Popular), debate timer, and tribunal ejection voting.
+          </p>
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Biometric Peek Terminal</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">4 Category Decks</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Ejection Tribunal</span>
+          </div>
+          <button onclick="openModal('imposter')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-magentaNeon hover:text-white border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-200 transition-all flex items-center justify-center gap-2">
+            <span>Inspect Architecture</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 10. Orbit Bumper -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between game-item group" data-category="arena" data-tags="orbit bumper 4 player multi touch arena ring slingshot physics overtime">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-limeNeon/10 border border-limeNeon/30 text-limeNeon flex items-center justify-center text-xl shadow-[0_0_15px_rgba(0,255,102,0.25)]">
+              <i class="fa-solid fa-circle-notch"></i>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider bg-white/5 border border-white/10 text-limeNeon uppercase">4-PLAYER ARENA</span>
+          </div>
+          <h3 class="text-xl font-extrabold text-white mb-2 group-hover:text-limeNeon transition-colors">10. Orbit Bumper</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            4-Player simultaneous battle arena on a single tablet or phone. Each player controls their corner pad to slingshot charged neon bumper discs while an electric ring perimeter constricts over time.
+          </p>
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">4-Corner Touch Pads</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Constricting Perimeter</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Collision Sparks</span>
+          </div>
+          <button onclick="openModal('orbit')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-limeNeon hover:text-black border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-200 transition-all flex items-center justify-center gap-2">
+            <span>Inspect Architecture</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 11. Cricket Clash 3D -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between game-item group" data-category="sports3d" data-tags="cricket clash 3d perspective batting bowling super over sports">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-[#E22D3E]/10 border border-[#E22D3E]/30 text-[#E22D3E] flex items-center justify-center text-xl shadow-[0_0_15px_rgba(226,45,62,0.25)]">
+              <i class="fa-solid fa-baseball-bat-ball"></i>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider bg-white/5 border border-white/10 text-[#E22D3E] uppercase">2.5D CRICKET</span>
+          </div>
+          <h3 class="text-xl font-extrabold text-white mb-2 group-hover:text-[#E22D3E] transition-colors">11. Cricket Clash 3D</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            Perspective 3D stadium super over. Features a clay pitch converging toward the horizon, dynamic pitch-bounce trajectory, articulated batsman with willow bat swing, and timing detection for 1, 4, 6, or Bowled.
+          </p>
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Perspective Math</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Turf Rebounds</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Timing Windows</span>
+          </div>
+          <button onclick="openModal('cricket')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-[#E22D3E] hover:text-white border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-200 transition-all flex items-center justify-center gap-2">
+            <span>Inspect Architecture</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 12. Tennis Ace 3D -->
+      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between game-item group" data-category="sports3d" data-tags="tennis ace 3d grand slam rally slice drive lob ai opponent">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-limeNeon/10 border border-limeNeon/30 text-limeNeon flex items-center justify-center text-xl shadow-[0_0_15px_rgba(0,255,102,0.25)]">
+              <i class="fa-solid fa-trophy"></i>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider bg-white/5 border border-white/10 text-limeNeon uppercase">3D GRAND SLAM</span>
+          </div>
+          <h3 class="text-xl font-extrabold text-white mb-2 group-hover:text-limeNeon transition-colors">12. Tennis Ace 3D</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            Grand Slam baseline duel. Over-the-shoulder third-person camera with 3D angled net, autonomous AI opponent tracking, and multiple stroke choices: Topspin Drive, Low Slice, and Overhead Lob.
+          </p>
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Third-Person Depth</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Stroke Multi-Select</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 text-[11px] font-mono text-slate-300">Autonomous AI</span>
+          </div>
+          <button onclick="openModal('tennis')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-limeNeon hover:text-black border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-200 transition-all flex items-center justify-center gap-2">
+            <span>Inspect Architecture</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE & CANVAS SPECS SECTION -->
+  <section id="architecture" class="relative z-10 py-20 px-6 max-w-7xl mx-auto border-t border-white/10">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="text-cyanNeon text-xs font-mono font-black tracking-widest uppercase mb-2">ENGINE ARCHITECTURE</div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">Zero Bloat. Direct CustomPainter Canvas.</h2>
+      <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+        Modern multi-game arcade apps are often plagued by 500MB+ asset bundles, embedded webviews, or heavy Unity runtimes. PartyVerse is built natively with lean mathematical Dart pipelines.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="glass-card p-8 rounded-2xl border-white/5">
+        <div class="w-12 h-12 rounded-xl bg-cyanNeon/10 text-cyanNeon flex items-center justify-center text-xl mb-6 shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+          <i class="fa-solid fa-compass-drafting"></i>
+        </div>
+        <h4 class="text-lg font-bold text-white mb-2">Mathematical Rendering</h4>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">
+          Every pitch, stadium stand, articulated stick figure, net mesh, and shadow is rendered dynamically using cubic Bézier paths and radial shader masks. Zero static bitmap sprites are loaded.
+        </p>
+        <span class="text-xs font-mono text-cyanNeon font-bold">60/120 Hz Sync • 0 External Textures</span>
+      </div>
+
+      <div class="glass-card p-8 rounded-2xl border-white/5">
+        <div class="w-12 h-12 rounded-xl bg-magentaNeon/10 text-magentaNeon flex items-center justify-center text-xl mb-6 shadow-[0_0_15px_rgba(255,0,127,0.2)]">
+          <i class="fa-solid fa-atom"></i>
+        </div>
+        <h4 class="text-lg font-bold text-white mb-2">Handcrafted Physics</h4>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">
+          Sub-step elastic collisions, 2.5D perspective projection math, friction dampening, and gravitational curve attractors were coded directly in Dart without third-party physics libraries.
+        </p>
+        <span class="text-xs font-mono text-magentaNeon font-bold">Euler Integration • Sub-step Separation</span>
+      </div>
+
+      <div class="glass-card p-8 rounded-2xl border-white/5">
+        <div class="w-12 h-12 rounded-xl bg-goldNeon/10 text-goldNeon flex items-center justify-center text-xl mb-6 shadow-[0_0_15px_rgba(255,184,0,0.2)]">
+          <i class="fa-solid fa-mobile-screen-button"></i>
+        </div>
+        <h4 class="text-lg font-bold text-white mb-2">Native Tactile Feedback</h4>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">
+          Coupled with device haptic generators (heavy impact on wickets, light click on bounces) and non-blocking background disk persistence to eliminate dropped frames during state updates.
+        </p>
+        <span class="text-xs font-mono text-goldNeon font-bold">HapticFeedback API • Async State</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLO DEVELOPER SPOTLIGHT SECTION -->
+  <section id="developer" class="relative z-10 py-20 px-6 max-w-7xl mx-auto">
+    <div class="glass-card rounded-3xl p-8 sm:p-14 border-cyanNeon/30 relative overflow-hidden">
+      
+      <!-- Top Neon Accent Border Line -->
+      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyanNeon via-magentaNeon to-goldNeon"></div>
+
+      <div class="flex flex-col lg:flex-row items-center gap-12">
+        
+        <!-- Developer Profile Badge -->
+        <div class="flex flex-col items-center text-center shrink-0">
+          <div class="relative mb-5">
+            <div class="w-36 h-36 rounded-3xl bg-gradient-to-tr from-[#0F172A] to-[#1E293B] border-2 border-cyanNeon/40 flex items-center justify-center shadow-[0_0_35px_rgba(0,240,255,0.3)]">
+              <i class="fa-solid fa-laptop-code text-6xl text-cyanNeon"></i>
+            </div>
+            <div class="absolute -bottom-2 -right-2 w-10 h-10 rounded-xl bg-magentaNeon flex items-center justify-center text-white text-base font-bold shadow-lg shadow-magentaNeon/40">
+              <i class="fa-solid fa-terminal"></i>
+            </div>
+          </div>
+          <span class="text-xs font-mono uppercase tracking-widest text-slate-400">INDIE ARCHITECT</span>
+          <span class="text-xl font-extrabold text-white mt-1">Solo Flutter Engineer</span>
+        </div>
+
+        <!-- Dev Bio & Engineering Philosophy -->
+        <div class="flex-1 text-center lg:text-left">
+          <div class="inline-block px-3 py-1 rounded-md bg-white/5 border border-white/10 text-cyanNeon text-xs font-mono uppercase tracking-wider mb-3">
+            INDIE PHILOSOPHY • SINGLE-DEV CRAFTSMANSHIP
+          </div>
+          <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-4">
+            Built from scratch with zero compromises.
+          </h3>
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+            PartyVerse was created as an engineering challenge: <strong>Can an entire multi-player arcade universe exist in a single Flutter codebase with zero heavy 3D frameworks or internet reliance?</strong>
+          </p>
+          <p class="text-slate-400 text-sm leading-relaxed mb-8">
+            From the trigonometric depth projection of Cricket and Tennis to simultaneous 4-corner multi-touch gesture dispatchers in Orbit Bumper and complete 4-player Ludo board mechanics, every line of physics and layout was coded independently to celebrate the true power of pure Flutter.
+          </p>
+
+          <!-- Technical Strengths Badges -->
+          <div class="flex flex-wrap gap-2.5 justify-center lg:justify-start">
+            <span class="px-3.5 py-1.5 rounded-lg bg-cyanNeon/10 border border-cyanNeon/30 text-cyanNeon font-mono text-xs font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-check text-[10px]"></i> Flutter 3.x Native
+            </span>
+            <span class="px-3.5 py-1.5 rounded-lg bg-cyanNeon/10 border border-cyanNeon/30 text-cyanNeon font-mono text-xs font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-check text-[10px]"></i> Sound Null-Safety
+            </span>
+            <span class="px-3.5 py-1.5 rounded-lg bg-magentaNeon/10 border border-magentaNeon/30 text-magentaNeon font-mono text-xs font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-check text-[10px]"></i> CustomPainter 2.5D
+            </span>
+            <span class="px-3.5 py-1.5 rounded-lg bg-limeNeon/10 border border-limeNeon/30 text-limeNeon font-mono text-xs font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-check text-[10px]"></i> Vector Momentum
+            </span>
+            <span class="px-3.5 py-1.5 rounded-lg bg-goldNeon/10 border border-goldNeon/30 text-goldNeon font-mono text-xs font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-check text-[10px]"></i> Zero External Assets
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- DIRECT APK DOWNLOAD TERMINAL SECTION -->
+  <section id="download" class="relative z-10 py-20 px-6 max-w-7xl mx-auto">
+    <div class="glass-card rounded-3xl p-8 sm:p-14 border-magentaNeon/30 text-center relative overflow-hidden shadow-[0_0_60px_rgba(255,0,127,0.15)]">
+      
+      <div class="max-w-3xl mx-auto">
+        
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-magentaNeon/10 border border-magentaNeon/30 text-magentaNeon text-xs font-mono uppercase tracking-widest mb-6">
+          <i class="fa-solid fa-cloud-arrow-down"></i> PUBLIC PRODUCTION DISTRIBUTION
+        </div>
+
+        <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight mb-4">
+          Ready for Game Night? <br class="hidden sm:inline">
+          <span class="text-gradient-cyan-magenta">Install PartyVerse Instantly.</span>
+        </h2>
+        
+        <p class="text-slate-400 text-sm sm:text-base mb-8 max-w-xl mx-auto">
+          Zero app store gating, zero ads, and zero account creation. Directly download the APK, install on any Android phone or tablet, and enjoy offline multiplayer anywhere.
+        </p>
+
+        <!-- Big Download CTA -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+          <!-- Expects app-release.apk in the same folder -->
+          <a href="app-release.apk" download class="w-full sm:w-auto px-10 py-5 rounded-2xl bg-gradient-to-r from-cyanNeon via-cyan-400 to-blue-500 text-black font-black text-sm tracking-widest uppercase btn-neon-cyan flex items-center justify-center gap-3">
+            <i class="fa-solid fa-download text-xl"></i>
+            <span>DOWNLOAD APP-RELEASE.APK (48.4 MB)</span>
+          </a>
+          <button onclick="copyADBCommand()" class="w-full sm:w-auto px-6 py-5 rounded-2xl bg-white/5 border border-white/10 hover:border-white/25 text-white font-mono text-xs tracking-wider flex items-center justify-center gap-2 transition-all">
+            <i class="fa-solid fa-terminal text-slate-400"></i>
+            <span id="copyBtnText">COPY ADB INSTALL CMD</span>
+          </button>
+        </div>
+
+        <!-- Release Specifications Terminal -->
+        <div class="bg-[#020409] border border-white/10 rounded-2xl p-6 text-left font-mono text-xs text-slate-400 shadow-inner">
+          <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+              <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+              <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+              <span class="ml-2 text-slate-500">partyverse-release-manifest.json</span>
+            </div>
+            <span class="text-limeNeon font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-shield-halved"></i> RELEASE VERIFIED
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] sm:text-xs">
+            <div><span class="text-slate-600">output_binary:</span> <span class="text-white">app-release.apk</span></div>
+            <div><span class="text-slate-600">file_size:</span> <span class="text-cyanNeon font-bold">48.4 MB</span></div>
+            <div><span class="text-slate-600">min_sdk_version:</span> <span class="text-white">API 26 (Android 8.0 Oreo+)</span></div>
+            <div><span class="text-slate-600">target_architectures:</span> <span class="text-white">arm64-v8a, armeabi-v7a</span></div>
+            <div><span class="text-slate-600">compiler_optimization:</span> <span class="text-white">R8 / ProGuard Stripped</span></div>
+            <div><span class="text-slate-600">offline_telemetry:</span> <span class="text-limeNeon">none (100% private)</span></div>
+            <div><span class="text-slate-600">display_frequency:</span> <span class="text-white">Adaptive 60 / 120 Hz ProMotion</span></div>
+            <div><span class="text-slate-600">state_persistence:</span> <span class="text-white">Local SharedPreferences (Async)</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE ARCHITECTURE DETAILS MODAL -->
+  <div id="detailsModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card bg-[#090E1D] border border-white/20 rounded-3xl max-w-2xl w-full p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+      <button onclick="closeModal()" class="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div id="modalContent">
+        <!-- Dynamically injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/10 py-12 px-6 max-w-7xl mx-auto text-slate-500 text-xs flex flex-col md:flex-row items-center justify-between gap-6">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-magentaNeon to-cyanNeon flex items-center justify-center text-black font-black text-xs">
+        <i class="fa-solid fa-gamepad"></i>
+      </div>
+      <div>
+        <span class="text-white font-bold text-sm tracking-wider">PartyVerse Arcade</span>
+        <span class="block text-[11px] text-slate-500">12-Game Suite • Single Device Offline Multiplayer</span>
+      </div>
+    </div>
+
+    <div class="text-center md:text-left">
+      Engineered by a Solo Flutter Developer using pure mathematical canvas rendering.
+    </div>
+
+    <div class="flex items-center gap-4 text-slate-400 text-base">
+      <a href="https://flutter.dev" target="_blank" class="hover:text-cyanNeon transition-colors" title="Flutter"><i class="fa-brands fa-flutter"></i></a>
+      <a href="https://dart.dev" target="_blank" class="hover:text-cyanNeon transition-colors" title="Dart"><i class="fa-solid fa-code"></i></a>
+      <a href="#download" class="hover:text-cyanNeon transition-colors" title="Android APK"><i class="fa-brands fa-android"></i></a>
+    </div>
+  </footer>
+
+  <!-- CORE JAVASCRIPT: PARTICLES, SEARCH, FILTERING & MODAL -->
+  <script>
+    // ==========================================
+    // 1. AMBIENT PARTICLE BACKGROUND CANVAS (60 FPS)
+    // ==========================================
+    const canvas = document.getElementById('ambientCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.8;
+        this.vx = (Math.random() - 0.5) * 0.45;
+        this.vy = (Math.random() - 0.5) * 0.45;
+        this.color = Math.random() > 0.5 ? 'rgba(0, 240, 255, ' : 'rgba(255, 0, 127, ';
+        this.alpha = Math.random() * 0.45 + 0.1;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+          this.reset();
+        }
+      }
+      draw() {
+        ctx.fillStyle = this.color + this.alpha + ')';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 48; i++) {
+      particles.push(new Particle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // ==========================================
+    // 2. ALL 12 GAMES ARCHITECTURE INSPECTOR DATA
+    // ==========================================
+    const gameDetails = {
+      ludo: {
+        title: '1. Ludo Clash',
+        tag: '2-4 PLAYER STRATEGY BOARD',
+        color: '#FFB800',
+        icon: 'fa-dice',
+        summary: 'Classic 4-player board game re-engineered in pure Flutter with clean cyber-neon paths, 3D animated dice rolling physics, token home-runways, and knock-out capture rules.',
+        features: [
+          'Full graph coordinate system mapping 52 common path tiles, 4 home yards, and 4 colored finish runways',
+          'Animated 3D pseudo-perspective dice roller simulating face tumbling and elastic bounce settle',
+          'Classic rule enforcement: 6 rolls release tokens, token stacking safe zones, and opponent elimination returns',
+          'Pass-and-play local multi-touch support for 2, 3, or 4 players with tactile turn indicators'
+        ]
+      },
+      tictactoe: {
+        title: '2. Tic Tac Toe (Grid Battle)',
+        tag: '2-PLAYER NEON SPLIT',
+        color: '#FF007F',
+        icon: 'fa-hashtag',
+        summary: 'Cyberpunk grid battle featuring glowing neon glyph strikes, instant matrix win detection, and non-blocking asynchronous disk state writing.',
+        features: [
+          'Non-blocking disk persistence: Statistics are saved asynchronously in the background so mobile UI frames never hitch or stutter',
+          'Dismiss-lock modals: Configured with barrierDismissible: false to prevent stray finger taps from accidentally dismissing the win dialogue',
+          'In-canvas fallback winner badge: Embedded directly above the grid matrix so match results remain permanently visible even if dialogues close',
+          'Optimized CustomPainter board grid with subtle glow shadows and neon strike lines'
+        ]
+      },
+      rps: {
+        title: '3. Rock Paper Scissors (Cyber Clash)',
+        tag: '2-PLAYER RAPID REFLEX',
+        color: '#00F0FF',
+        icon: 'fa-hand-back-fist',
+        summary: 'Split-screen simultaneous hand gesture faceoff built for high-speed reflex testing and streak multiplier tracking.',
+        features: [
+          'Dual simultaneous gesture detectors allowing two players to tap their picks within millisecond windows',
+          'Round-by-round streak multipliers: Consecutive victories double the point weight of subsequent rounds',
+          'Rapid visual feedback: Screen flash and haptic alert cues acknowledge simultaneous selections',
+          'Instant tie-breaking rounds with rapid 3-second countdown loops'
+        ]
+      },
+      tapbattle: {
+        title: '4. Tap Battle (Fingers War)',
+        tag: 'TERRITORIAL TUG-OF-WAR',
+        color: '#00FF66',
+        icon: 'fa-hand-pointer',
+        summary: 'Pure CPS (clicks-per-second) territorial tug-of-war where both players tap furiously on opposite halves of a single screen.',
+        features: [
+          'Physical energy partition: The center partition dynamically translates towards the player with lower tap velocity',
+          'Real-time tap queuing: Captures high-frequency multi-finger taps without dropping touch events',
+          'Trauma screen shake: High click rates trigger dynamic canvas offsets for visceral tactile impact',
+          'Continuous territorial decay: If a player stops tapping, the opposing pressure immediately reclaims turf'
+        ]
+      },
+      fruitduel: {
+        title: '5. Fruit Duel (Blade Clash)',
+        tag: 'FAST SLICE REFLEX',
+        color: '#FF6D00',
+        icon: 'fa-lemon',
+        summary: 'Split-screen slicing duel inspired by blade action classics, equipped with hazard bomb penalties and particle splashes.',
+        features: [
+          '2D ray-segment cutting intersection: Detects exact slicing angles across fruit trajectories',
+          'Hazard bombs: Accidental slicing penalizes score and triggers explosive screen trauma',
+          'Mathematical juice splatter particles: Velocity-governed particle spray rendered via canvas loops',
+          'Independent player halves: Simultaneous swipe tracking prevents cross-screen gesture interference'
+        ]
+      },
+      carrom: {
+        title: '6. Carrom Clash',
+        tag: 'WOODEN BOARD PHYSICS',
+        color: '#FFB800',
+        icon: 'fa-bullseye',
+        summary: 'Authentic Indian carrom board simulation replacing heavy sprite engines with mathematical 2D circle impulse vectors.',
+        features: [
+          'Elastic momentum conservation: v1\' = v1 - 2*m2/(m1+m2) * dot(v1-v2, n) * n',
+          'Sub-step contact separation prevents disc overlap and sticky clipping during multi-puck cluster breaks',
+          'Baseline slider controls: Position striker precisely across the line without obstructing the finger drag angle',
+          'Four corner pocket suction traps with dampening deceleration and haptic pocket thuds'
+        ]
+      },
+      pong: {
+        title: '7. Pong Battle',
+        tag: 'RETRO TABLE TENNIS',
+        color: '#00F0FF',
+        icon: 'fa-table-tennis-paddle-ball',
+        summary: 'Top-down cartoon table tennis on warm cream turf with circular paddles, rectangular handles, and speed-wedge tails.',
+        features: [
+          'Dual-tone circular paddle heads with rectangular handle offsets and bold black comic book outlines',
+          'Dynamic drop shadows cast onto the green table surface for immediate depth cues',
+          'Tapering speed-wedge motion blur that stretches proportionally to ball velocity',
+          'Semicircular protruding edge score badge (1 • 2) and exit buttons'
+        ]
+      },
+      basketball: {
+        title: '8. Basketball 30s',
+        tag: '30S SWIPE SHOOTOUT',
+        color: '#FF6D00',
+        icon: 'fa-basketball',
+        summary: 'Streetball flick shootout with full 2D gesture angle velocity, backboard deflections, and a layered net pass-through.',
+        features: [
+          'Full 2D pan delta angle tracking: Flicking diagonally misses genuinely; only straight aim scores',
+          'Parabolic arc projection: Ball scale smoothly contracts from 1.0 down to 0.52 as it travels in depth',
+          '3-Tier backboard and golden rim lip deflection restitution with metallic thuds',
+          'Depth-sorted net: The ball drops behind the front rim and stretches the white net cords dynamically'
+        ]
+      },
+      imposter: {
+        title: '9. Word Imposter (Chameleon)',
+        tag: '3-8 PLAYER SOCIAL DEDUCTION',
+        color: '#FF007F',
+        icon: 'fa-user-secret',
+        summary: 'Pass-and-play psychological party game featuring classified biometric peek scanners and tribunal ejection voting.',
+        features: [
+          'Holding fingerprint terminal triggers animated laser scanning line with haptic feedback',
+          '4 built-in offline category decks: Animals, Fruits, Sports, and Popular icons',
+          'Radar countdown timer for active 60-second clue round debates',
+          'Target crosshair selection grid for ejecting the suspected spy with truth reveal'
+        ]
+      },
+      orbit: {
+        title: '10. Orbit Bumper',
+        tag: '4-PLAYER CORNER ARENA',
+        color: '#00FF66',
+        icon: 'fa-circle-notch',
+        summary: '4 players touch the 4 corners of a single phone or tablet to slingshot bumpers in an intense constricting circle.',
+        features: [
+          'Simultaneous 4-finger multi-touch tracking via dedicated corner gesture pads',
+          'Constricting electric boundary that shrinks into an Overtime Danger Zone',
+          'Direct bumper impacts transfer elastic momentum with particle spark bursts',
+          'Last surviving bumper on the arena claims the victory crown'
+        ]
+      },
+      cricket: {
+        title: '11. Cricket Clash 3D',
+        tag: '2.5D PERSPECTIVE SPORTS',
+        color: '#E22D3E',
+        icon: 'fa-baseball-bat-ball',
+        summary: 'Perspective 3D stadium super over with articulated batsman, clay pitch convergence, and ball bounce mechanics.',
+        features: [
+          'Trapezoidal clay pitch converging towards a distant bowler at depth z = 280',
+          'Ball pitches onto turf, drops an oval shadow, and rebounds up towards the batsman',
+          'Articulated batsman with helmet, pads, and English willow bat follow-through swing',
+          'Calculates strike depth window for Singles (+1), Fours (+4), Sixes (+6), or Clean Bowled'
+        ]
+      },
+      tennis: {
+        title: '12. Tennis Ace 3D',
+        tag: '3D GRAND SLAM DUEL',
+        color: '#00FF66',
+        icon: 'fa-trophy',
+        summary: 'Third-person over-the-shoulder baseline tennis against an autonomous tracking AI opponent.',
+        features: [
+          '3D net mesh at mid-court with horizontal cords, white tape, and metal post bevels',
+          'Autonomous AI opponent glides across the horizon baseline to return rallies',
+          'Shot variety selector: Topspin Drive, Low Slice, and Overhead Lob',
+          'Full tennis point scoring system (15, 30, 40, Deuce, Game)'
+        ]
+      }
+    };
+
+    // Filter and search handlers
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const gameCards = document.querySelectorAll('.game-item');
+    const searchInput = document.getElementById('gameSearch');
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => {
+          b.classList.remove('bg-cyanNeon', 'text-black');
+          b.classList.add('bg-white/5', 'text-slate-300');
+        });
+        btn.classList.remove('bg-white/5', 'text-slate-300');
+        btn.classList.add('bg-cyanNeon', 'text-black');
+        applyFilters();
+      });
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener('input', applyFilters);
+    }
+
+    function applyFilters() {
+      const activeFilterBtn = document.querySelector('.filter-btn.bg-cyanNeon');
+      const activeFilter = activeFilterBtn ? activeFilterBtn.getAttribute('data-filter') : 'all';
+      const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+      gameCards.forEach(card => {
+        const category = card.getAttribute('data-category');
+        const tags = card.getAttribute('data-tags').toLowerCase();
+        const matchesCategory = (activeFilter === 'all' || category === activeFilter);
+        const matchesSearch = tags.includes(searchQuery);
+
+        if (matchesCategory && matchesSearch) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Modal Architecture Inspector
+    function openModal(gameKey) {
+      const data = gameDetails[gameKey];
+      if (!data) return;
+
+      const modalContent = document.getElementById('modalContent');
+      modalContent.innerHTML = `
+        <div class="flex items-center gap-4 mb-5">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl text-black font-black shadow-lg" style="background-color: ${data.color}">
+            <i class="fa-solid ${data.icon}"></i>
+          </div>
+          <div>
+            <div class="text-[11px] font-mono uppercase tracking-widest text-slate-400">${data.tag}</div>
+            <h3 class="text-2xl font-black text-white">${data.title}</h3>
+          </div>
+        </div>
+        <p class="text-slate-300 text-sm leading-relaxed mb-6 font-normal">${data.summary}</p>
+        
+        <div class="border-t border-white/10 pt-5 mb-6">
+          <h4 class="text-xs font-mono uppercase tracking-wider text-cyanNeon mb-3.5 font-bold flex items-center gap-2">
+            <i class="fa-solid fa-microchip"></i> Key Architectural &amp; Physics Highlights:
+          </h4>
+          <ul class="space-y-2.5">
+            ${data.features.map(f => `
+              <li class="flex items-start gap-2.5 text-xs text-slate-300 leading-normal">
+                <i class="fa-solid fa-code-commit text-cyanNeon mt-0.5 text-[10px]"></i>
+                <span>${f}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+
+        <div class="bg-black/60 p-4 rounded-xl border border-white/10 flex items-center justify-between text-xs font-mono">
+          <span class="text-slate-400">Rendering: CustomPainter Canvas</span>
+          <span class="text-limeNeon font-bold flex items-center gap-1.5">
+            <i class="fa-solid fa-bolt"></i> 60 FPS Native Loop
+          </span>
+        </div>
+      `;
+
+      document.getElementById('detailsModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('detailsModal').classList.add('hidden');
+    }
+
+    document.getElementById('detailsModal').addEventListener('click', (e) => {
+      if (e.target.id === 'detailsModal') closeModal();
+    });
+
+    // Copy ADB command to clipboard
+    function copyADBCommand() {
+      const cmd = "adb install -r build/app/outputs/flutter-apk/app-release.apk";
+      const dummy = document.createElement("input");
+      document.body.appendChild(dummy);
+      dummy.value = cmd;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+
+      const btnText = document.getElementById('copyBtnText');
+      const original = btnText.innerText;
+      btnText.innerText = "COPIED TO CLIPBOARD!";
+      setTimeout(() => {
+        btnText.innerText = original;
+      }, 2400);
+    }
+  </script>
+</body>
+</html>
